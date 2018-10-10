@@ -1,3 +1,9 @@
+//////////////////////////////
+//// File: Multi-threading.cpp
+//// Description: An example of multithreading
+//// Author: Gleb Demenov
+//////////////////////////////
+
 #include <iostream>
 #include <thread>
 

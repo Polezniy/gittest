@@ -1,7 +1,8 @@
-/// \file Source.cpp
-///  \This program represents the basics of the game called "Hangman". 
-/// \author Gleb Demenov
-
+//////////////////////////////
+/// File: Source.cpp
+/// Description: This program represents the basics of the game called "Hangman". 
+/// Author: Gleb Demenov
+//////////////////////////////
 
 #include <iostream>//Library includes standard input/output stream objects.
 #include <time.h>//Library allows to manipulate date and time information.

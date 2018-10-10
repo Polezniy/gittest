@@ -1,5 +1,9 @@
-//Solving race condition, using mutual exclusion
-/*
+//////////////////////////////
+//// File: Mutex.cpp
+//// Description: Solving race condition, using mutual exclusion
+//// Author: Gleb Demenov
+//////////////////////////////
+
 #include <iostream>
 #include <thread>
 #include <mutex> // Mutual exclusion

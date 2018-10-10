@@ -1,4 +1,8 @@
-//Simulating race condition//
+//////////////////////////////
+//// File: Race_condition.cpp
+//// Description: Simulating race condition
+//// Author: Gleb Demenov
+//////////////////////////////
 
 #include <iostream>
 #include <thread>

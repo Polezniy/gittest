@@ -1,5 +1,9 @@
-//Simulating Deadlock condition//
-/*
+//////////////////////////////
+//// File: Deadlock.cpp
+//// Description: Simulating Deadlock condition
+//// Author: Gleb Demenov
+//////////////////////////////
+
 #include <iostream>
 #include <thread>
 #include <mutex> // Mutual exclusion
@@ -53,4 +57,3 @@ int main() //main thread
 
 	return 0;
 }
-*/

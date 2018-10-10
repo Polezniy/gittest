@@ -1,7 +1,8 @@
-/// file Palindrome.cpp
-/// This program checks if the input word is palindrome
-/// Author: Gleb Demenov
-
+//////////////////////////////
+//// File: Palindrome.cpp
+//// Description: This program checks if the input word is palindrome
+//// Author: Gleb Demenov
+//////////////////////////////
 
 #include <string>
 #include <stdexcept>
