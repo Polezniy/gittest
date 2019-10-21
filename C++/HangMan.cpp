@@ -1,85 +1,84 @@
-//////////////////////////////
-/// File: Source.cpp
-/// Description: This program represents the basics of the game called "Hangman". 
-/// Author: Gleb Demenov
-//////////////////////////////
+ /// @Source.cpp
+/// @ This programm represents the basics of the game called "Hangman". 
+
 
 #include <iostream>//Library includes standard input/output stream objects.
-#include <time.h>//Library allows to manipulate date and time information.
+#include <time.h>
 
+////FUNCTIONS////
+void UserInterface();//USER INTERFACE
+void HardUserInterface();//HARD AND NORMAL INTERFACE
+void InputInterface();//INPUT INTERFACE
+void StarFun(char buf[], int l);
+void Guess(char input, int len);
+void Mistakes();
+void GuessedLetters(char input);
 
-void UserInterface();//Easy user interface.
-void HardUserInterface();//Hard and normal user interface.
-void InputInterface();//Input interface.
-void HideFunc(char _buf[], int _l);//Function that replaces all letters with '-' symbol.
-void Guess(char _input, int _len);//Checking function.
-void Mistakes();//Function that builds hangman.
-void GuessedLetters(char _input);//Incorrect letter function.
+////GLOBAL VARIABLES////
+char g_Letter;//INPUT
+int g_Attempts;//ATTEMPTS
+int g_Check = 0;//CHECKING IF THE WORD COMPLETE
 
-char g_letter;//Input.
-int g_attempts;//Attempts.
-int g_check = 0;//Checking if the word is complete.
+char R1, R2, R3, R4, R5, R6;//HANGMAN PARTS
 
-char g_h1, g_h2, g_h3, g_h4, g_h5, g_h6;//Hangman parts.
+char g_leftleg;//LEFT LEG
+char g_rightleg;//RIGHT LEG
+char g_leftarm;//LEFT ARM
+char g_rightarm;//RIGHT ARM
 
-char g_leftleg;//Left leg.
-char g_rightleg;//Right leg.
-char g_leftarm;//Left arm.
-char g_rightarm;//Right arm.
+int len;
+int Choice;
+bool Correct;
 
-char ActualWord[10] = { 0 };//Empty array.
-char HiddenArray[10] = { 0 };//An array with a hidden word.
-char Incorrect[10] = {};//Incorrect Letters.
-
-int g_len;//Length
-bool g_correct;//The value defines if letter is correct(true) or not(false).
-
+////GLOBAL ARRAYS////
+char HiddenWord[10] = {};//Empty array
+char StarsArray[10] = { 0 };//Stars array
+char Incorrect[10] = { 0 };//Incorrect Letters
 
 int main()
 {
-	char EasyWordList[5][6] = { "mango", "chips", "fries", "drink", "sauce" };//A list of words for easy level.
-	char NormalWordList[5][7] = { "animal", "castle", "dinner", "window", "ticket" };//A list of words for normal level.
-	char HardWordList[5][11] = { "basketball", "technology", "goverment" , "depression", "watermelon"};//A list of words for hard level.
-	char* d_array[4] = { "Easy", "Normal", "Hard", "Normal" };//A list of difficulties.
+	char EasyWordList[5][6] = { "mango", "chips", "fries", "drink", "sauce" };
+	char NormalWordList[5][7] = { "animal", "castle", "dinner", "window", "ticket" };
+	char HardWordList[5][11] = { "basketball", "technology", "goverment" , "depression", "watermelon"};
+	char* d_array[4] = { "Easy", "Normal", "Hard", "Normal" };//a list of difficulties
 
-	srand(time(NULL));//Seed.
+	srand(time(NULL));//seed
 
-	int m_ii = rand() % 5;//Randomize a row and column of array.
+	int ii = rand() % 5;
 
  
-	int m_decision = 0;
-	int m_menu = 0;
-	int m_difficulty;
-
+	int Decision = 0;
+	int Difficulty;
 	g_leftarm = ' ';
 	g_rightarm = ' ';
 
 	g_rightleg = ' ';
 	g_leftleg = ' ';
 
-	g_h1 = ' ';//H
-	g_h2 = ' ';//A
-	g_h3 = ' ';//N
-	g_h4 = ' ';//G
-	g_h5 = ' ';//M
-	g_h6 = ' ';//A
-			   //N
+	R1 = ' ';//H
+	R2 = ' ';//A
+	R3 = ' ';//N
+	R4 = ' ';//G
+	R5 = ' ';//M
+	R6 = ' ';//A
+			 //N
 
-	while (m_menu < 5)
+	while (Decision < 5)
 	{
 		system("cls");
-		std::cout << "  Press 1 to Start\n";
-		std::cout << "  Press 2 for Options\n";
-		std::cout << "  Press 3 to Exit\n";
-		std::cin >> m_decision;
+		std::cout << "  Press 1 for Singleplayer\n";
+		std::cout << "  Press 2 for Multiuplayer\n";
+		std::cout << "  Press 3 for Options\n";
+		std::cout << "  Press 4 to Exit\n";
+		std::cin >> Decision;
 
-		if (m_decision == 3)
+		if (Decision == 4)
 		{
 			system("cls");
 			return(0);
 		}
 
-		if (m_decision == 2)
+		if (Decision == 3)
 		{
 			system("cls");
 
@@ -89,17 +88,17 @@ int main()
 
 			std::cout << "Current difficulty: " << d_array[3] << "\n\n";
 
-			std::cin >> m_difficulty;
+			std::cin >> Difficulty;
 
-			if (m_difficulty == 1)
+			if (Difficulty == 1)
 			{
 				d_array[3] = d_array[0];//EASY
 			}
-			if (m_difficulty == 2)
+			if (Difficulty == 2)
 			{
 				d_array[3] = d_array[1];//NORMAL
 			}
-			if (m_difficulty == 3)
+			if (Difficulty == 3)
 			{
 				d_array[3] = d_array[2];//HARD
 			}
@@ -109,127 +108,163 @@ int main()
 
 			system("pause");
 		}
-
-		if (m_decision == 1)
+		if (Decision == 2)
 		{
-			m_menu = 5;
+			Decision = 5;//TO FINISH THE MENU LOOP
 			system("cls");
+
+			std::cout << "Welcome to multiplayer!\n\n";
+			std::cout << "Player 1\n";
+			std::cout << "Enter the word (10 letters max) > ";
+			std::cin >> HiddenWord;
+
+			len = strlen(HiddenWord);
+			strcpy(StarsArray, HiddenWord);
+			StarFun(StarsArray, len);
+
+			system("cls");
+
+			std::cout << StarsArray << "\n\n";
+			std::cout << "Press 1 to Continue\n\n";
+			std::cout << "Press 2 to Show the word\n\n";
+			std::cin >> Choice;
+
+			switch (Choice)
+			{
+
+			case (1): 
+
+				g_Attempts = 6;
+
+				while (g_Check < len)
+				{
+					if (g_Attempts == 0)
+					{
+						break;
+					}
+
+					HardUserInterface();//HARD USER-
+					InputInterface();//-INTERFACE
+					Guess(g_Letter, len);
+
+					if (Correct == false)
+					{
+						GuessedLetters(g_Letter);
+						Mistakes();
+
+					}
+				}
+			}
+
+		}
+		if (Decision == 1)
+		{
+			Decision = 5;//TO FINISH MENU LOOP
+			system("cls");
+
+			if (d_array[3] == d_array[1])//if difficulty normal 
+			{		
+				g_Attempts = 6;
+				strcpy(HiddenWord, NormalWordList[ii]);
+				strcpy(StarsArray, HiddenWord);
+
+				len = strlen(HiddenWord);
+				StarFun(StarsArray, len);
+
+				while (g_Check < len)
+				{
+					if (g_Attempts == 0)
+					{
+						break;
+					}
+
+					HardUserInterface();//HARD USER-
+					InputInterface();//-INTERFACE
+					Guess(g_Letter, len);
+
+					if (Correct == false)
+					{
+						GuessedLetters(g_Letter);
+						Mistakes();
+						
+					}
+				}
+			}
+
+			if (d_array[3] == d_array[2])//if difficulty hard
+			{
+				g_Attempts = 6;
+				strcpy(HiddenWord, HardWordList[ii]);
+				strcpy(StarsArray, HiddenWord);
+
+				len = strlen(HiddenWord);
+				StarFun(StarsArray, len);
+
+				while (g_Check < len)
+				{
+					if (g_Attempts == 0)
+					{
+						break;
+					}
+
+					HardUserInterface();//HARD USER-
+					InputInterface();//-INTERFACE
+					Guess(g_Letter, len);
+
+					if (Correct == false)
+					{
+						g_Attempts--;
+						Mistakes();
+						GuessedLetters(g_Letter);
+					}
+				}
+			}
+			else //EASY
+			{
+				g_Attempts = 10;
+
+				while (g_Check < len)
+				{
+					if (g_Attempts == 0)
+					{
+						break;
+					}
+
+					UserInterface();//USER-
+					InputInterface();//-INTERFACE
+					Guess(g_Letter, len);
+
+					if (Correct == false)
+					{
+						g_Attempts--;
+						Mistakes();
+						GuessedLetters(g_Letter);
+					}
+				}
+			}
 		  }			
-	}
 
-	if (d_array[3] == d_array[1])//if difficulty normal 
-	{
-		g_attempts = 6;
-		strcpy(ActualWord, NormalWordList[m_ii]);
-		strcpy(HiddenArray, ActualWord);
-
-		g_len = strlen(ActualWord);
-		HideFunc(HiddenArray, g_len);
-
-		while (g_check < g_len)
-		{
-			if (g_attempts == 0)
-			{
-				break;
-			}
-
-			HardUserInterface();//HARD USER-
-			InputInterface();//-INTERFACE
-			Guess(g_letter, g_len);
-
-			if (g_correct == false)
-			{
-				GuessedLetters(g_letter);
-				Mistakes();
-
-			}
-		}
-	}
-
-	if (d_array[3] == d_array[2])//if difficulty hard
-	{
-		g_attempts = 6;
-		strcpy(ActualWord, HardWordList[m_ii]);
-		strcpy(HiddenArray, ActualWord);
-
-		g_len = strlen(ActualWord);
-		HideFunc(HiddenArray, g_len);
-
-		while (g_check < g_len)
-		{
-			if (g_attempts == 0)
-			{
-				break;
-			}
-
-			HardUserInterface();//HARD USER-
-			InputInterface();//-INTERFACE
-			Guess(g_letter, g_len);
-
-			if (g_correct == false)
-			{
-				g_attempts--;
-				Mistakes();
-				GuessedLetters(g_letter);
-			}
-		}
-	}
-	if (d_array[3] == d_array[0]) //if difficulty easy
-	{
-		g_attempts = 10;
-		strcpy(ActualWord, HardWordList[m_ii]);
-		strcpy(HiddenArray, ActualWord);
-
-		g_len = strlen(ActualWord);
-		HideFunc(HiddenArray, g_len);
-
-		while (g_check < g_len)
-		{
-			if (g_attempts == 0)
-			{
-				break;
-			}
-
-			UserInterface();//USER-
-			InputInterface();//-INTERFACE
-			Guess(g_letter, g_len);
-
-			if (g_correct == false)
-			{
-				g_attempts--;
-				Mistakes();
-				GuessedLetters(g_letter);
-			}
-		}
 	}
 
 	////ENDING SCREEN
-	if (g_check == g_len)
+	if (g_Check == len)
 	{
 		system("cls");
-
 		////////////////////// USER INTERFACE /////////////////
 		std::cout << "                 -----------------\n";
 		std::cout << "                 H A N G   M A N\n";
 		std::cout << "                 -----------------\n\n\n\n";
 
-		std::cout << "      " << g_h3 << g_h3 << g_h3 << g_h3 << g_h3 << "\n";
-		std::cout << "      " << g_h2 << "   " << g_h4 << "\n";
-		std::cout << "      " << g_h2 << "   " << g_h5 << "\n";
-		std::cout << "      " << g_h2 << "  " << (char)g_leftarm << g_h6 << (char)g_rightarm << "\n";
-		std::cout << "      " << g_h2 << "  " << "" << (char)g_leftleg << (char)g_rightleg << "\n";
-		std::cout << "      " << g_h2;
-		std::cout << g_h1 << g_h1 << g_h1 << g_h1 << g_h1 << g_h1 << g_h1 << "                   " << "Guessed letters: " << "\n";
-		std::cout << "                                 ";
-
-		for (int i = 0; i < 10; i++)
-		{
-			std::cout << Incorrect[i] << " ";
-		}
-
+		std::cout << "      " << R3 << R3 << R3 << R3 << R3 << "\n";
+		std::cout << "      " << R2 << "   " << R4 << "\n";
+		std::cout << "      " << R2 << "   " << R5 << "\n";
+		std::cout << "      " << R2 << "  " << (char)g_leftarm << R6 << (char)g_rightarm << "\n";
+		std::cout << "      " << R2 << "  " << "" << (char)g_leftleg << (char)g_rightleg << "\n";
+		std::cout << "      " << R2;
+		std::cout << R1 << R1 << R1 << R1 << R1 << R1 << R1 << "\n";
 		std::cout << "\n\n\n";
 
-		std::cout << "      " << HiddenArray << "                    " << " Guesses: " << g_attempts << "\n\n\n\n";
+		std::cout << "      " << StarsArray << "                    " << " Guesses: " << g_Attempts << "\n\n\n\n";
 
 		std::cout << "YOU WIN\n\n\n";
 		std::cout << "Congratulations!\n\n";
@@ -237,34 +272,26 @@ int main()
 		return 0;
 	}
 
-	if (g_attempts == 0)
+	if (g_Attempts == 0)
 	{
 		system("cls");
-
 		////////////////////// USER INTERFACE /////////////////
 		std::cout << "                 -----------------\n";
 		std::cout << "                 H A N G   M A N\n";
 		std::cout << "                 -----------------\n\n\n\n";
 
-		std::cout << "      " << g_h3 << g_h3 << g_h3 << g_h3 << g_h3 << "\n";
-		std::cout << "      " << g_h2 << "   " << g_h4 << "\n";
-		std::cout << "      " << g_h2 << "   " << g_h5 << "\n";
-		std::cout << "      " << g_h2 << "  " << (char)g_leftarm << g_h6 << (char)g_rightarm << "\n";
-		std::cout << "      " << g_h2 << "  " << (char)g_leftleg << (char)g_rightleg << "\n";
-		std::cout << "      " << g_h2;
-		std::cout << g_h1 << g_h1 << g_h1 << g_h1 << g_h1 << g_h1 << g_h1 << "                   " << "Guessed letters: " << "\n";
-		std::cout << "                                 ";
-
-		for (int i = 0; i < 10; i++)
-		{
-			std::cout << Incorrect[i] << " ";
-		}
-
+		std::cout << "      " << R3 << R3 << R3 << R3 << R3 << "\n";
+		std::cout << "      " << R2 << "   " << R4 << "\n";
+		std::cout << "      " << R2 << "   " << R5 << "\n";
+		std::cout << "      " << R2 << "  " << (char)g_leftarm << R6 << (char)g_rightarm << "\n";
+		std::cout << "      " << R2 << "  " << (char)g_leftleg << (char)g_rightleg << "\n";
+		std::cout << "      " << R2;
+		std::cout << R1 << R1 << R1 << R1 << R1 << R1 << R1 << "\n";
 		std::cout << "\n\n\n";
 
-		std::cout << "      " << HiddenArray << "                    " << " Guesses: " << g_attempts << "\n\n\n\n";
+		std::cout << "      " << StarsArray << "                    " << " Guesses: " << g_Attempts << "\n\n\n\n";
 
-		std::cout << "Word > " << ActualWord << "\n\n";
+		std::cout << "Word > " << HiddenWord << "\n\n";
 
 		std::cout << "YOU LOST\n\n";
 		std::cout << "GAME OVER\n\n";
@@ -282,36 +309,30 @@ void UserInterface()
 	std::cout << "                 H A N G   M A N\n";
 	std::cout << "                 -----------------\n\n\n\n";
 
-	std::cout << "      " << g_h3 << g_h3 << g_h3 << g_h3 << g_h3 << "\n";
-	std::cout << "      " << g_h2 << "   " << g_h4 << "\n";
-	std::cout << "      " << g_h2 << "   " << g_h5 << "\n";
-	std::cout << "      " << g_h2 << "  " << (char)g_leftarm << g_h6 << (char)g_rightarm << "\n";
-	std::cout << "      " << g_h2 << "  " << "" << (char)g_leftleg << (char)g_rightleg << "\n";
-	std::cout << "      " << g_h2;
-	std::cout << g_h1 << g_h1 << g_h1 << g_h1 << g_h1 << g_h1 << g_h1 << "                   " << "Guessed letters: " << "\n";
-	std::cout << "                                 ";
-
-	for (int i = 0; i < 10; i++)
-	{
-		std::cout << Incorrect[i] << " ";
-	}
-
+	std::cout << "      " << R3 << R3 << R3 << R3 << R3 << "\n";
+	std::cout << "      " << R2 << "   " << R4 << "\n";
+	std::cout << "      " << R2 << "   " << R5 << "\n";
+	std::cout << "      " << R2 << "  " << (char)g_leftarm << R6 << (char)g_rightarm << "\n";
+	std::cout << "      " << R2 << "  " << "" << (char)g_leftleg << (char)g_rightleg << "\n";
+	std::cout << "      " << R2;
+	std::cout << R1 << R1 << R1 << R1 << R1 << R1 << R1 << "                   " << "Guessed letters: " << "\n";
 	std::cout << "\n\n\n";
 
-	std::cout << "      " << HiddenArray << "                    " << " Guesses: " << g_attempts << "\n\n\n\n";
+	std::cout << "      " << StarsArray << "                    " << " Guesses: " << g_Attempts << "\n\n\n\n";
 
+	//////////////// END OF USER INTERFACE ///////////////
 }
 void InputInterface()
 {
 		std::cout << "    " << "Enter a letter: ";
-		std::cin >> g_letter;
+		std::cin >> g_Letter;
 }
 void HardUserInterface()
 {
-	g_h1 = '_';
-	g_h2 = '|';
-	g_h3 = '_';
-	g_h4 = '|';
+	R1 = '_';
+	R2 = '|';
+	R3 = '_';
+	R4 = '|';
 
 	system("cls");
 
@@ -320,58 +341,46 @@ void HardUserInterface()
 	std::cout << "                 H A N G   M A N\n";
 	std::cout << "                 -----------------\n\n\n\n";
 
-	std::cout << "      " << g_h3 << g_h3 << g_h3 << g_h3 << g_h3 << "\n";
-	std::cout << "      " << g_h2 << "   " << g_h4 << "\n";
-	std::cout << "      " << g_h2 << "   " << g_h5 << "\n";
-	std::cout << "      " << g_h2 << "  " << (char)g_leftarm << g_h6 << (char)g_rightarm << "\n";
-	std::cout << "      " << g_h2 << "  " << "" << (char)g_leftleg << (char)g_rightleg << "\n";
-	std::cout << "      " << g_h2;
-	std::cout << g_h1 << g_h1 << g_h1 << g_h1 << g_h1 << g_h1 << g_h1 << "                   " << "Guessed letters: " << "\n\n";
-	std::cout << "                                 ";
-	
-	for (int i = 0; i < 10; i++)
-	{
-		std::cout << Incorrect[i] << " ";
-	}
-	
+	std::cout << "      " << R3 << R3 << R3 << R3 << R3 << "\n";
+	std::cout << "      " << R2 << "   " << R4 << "\n";
+	std::cout << "      " << R2 << "   " << R5 << "\n";
+	std::cout << "      " << R2 << "  " << (char)g_leftarm << R6 << (char)g_rightarm << "\n";
+	std::cout << "      " << R2 << "  " << "" << (char)g_leftleg << (char)g_rightleg << "\n";
+	std::cout << "      " << R2;
+	std::cout << R1 << R1 << R1 << R1 << R1 << R1 << R1 << "                   " << "Guessed letters: " << "\n\n";
+	std::cout << "                                 " << Incorrect;
 	std::cout << "\n\n\n";
 
-	std::cout << "      " << HiddenArray << "                    " << " Guesses: " << g_attempts << "\n\n\n\n";
+	std::cout << "      " << StarsArray << "                    " << " Guesses: " << g_Attempts << "\n\n\n\n";
 
 	//////////////// END OF USER INTERFACE ///////////////
 
 }
-void HideFunc(char _buf[], int _l)
+void StarFun(char buf[], int l)
 {
 
-	for (int i = 0; i < _l; i++)
+	for (int i = 0; i < l; i++)
 	{
-		_buf[i] = '-';
+		buf[i] = '-';
 	}
 }
-void Guess(char _input, int _len)//CHECKING LETTER
+void Guess(char input, int len)//CHECKING LETTER
 {
-	g_correct = false;
+	Correct = false;
 
-	for (int i = 0; i < _len; i++)
+	for (int i = 0; i < len; i++)
 	{
-		if (!(((_input >= '0') && (_input <= '100')) && ((_input >= 'A') && (_input <= 'z'))))//IF ANY OTHER SYMBOL ENTERED
+		if (input == HiddenWord[i])
 		{
-			g_correct = true;
-			break;
-		}
-		if (_input == ActualWord[i])
-		{
-			if (HiddenArray[i] != _input)
+			if (StarsArray[i] != input)
 			{
-				HiddenArray[i] = _input;
-				g_check++;
-				g_correct = true;
+				StarsArray[i] = input;
+				g_Check++;
+				Correct = true;
 			}
-
 			else//IF LETTER IS REPEATED
 			{
-				g_correct = true;
+				Correct = true;
 				break;
 			}
 		}
@@ -380,71 +389,71 @@ void Guess(char _input, int _len)//CHECKING LETTER
 void Mistakes()
 {
   //// 1 MISTAKE
-  if (g_attempts == 9)
+  if (g_Attempts == 9)
   {
-	  g_h1 = '_';
+	  R1 = '_';
   }
 
   ////2 MISTAKE
-  if (g_attempts == 8)
+  if (g_Attempts == 8)
   {
-	  g_h2 = '|';
+	  R2 = '|';
   }
 
   ////3 MISTAKE
-  if (g_attempts == 7)
+  if (g_Attempts == 7)
   {
-	  g_h3 = '_';
+	  R3 = '_';
   }
 
   ////4 MISTAKE
-  if (g_attempts == 6)
+  if (g_Attempts == 6)
   {
-	  g_h4 = '|';
+	  R4 = '|';
   }
 
   ////5 MISTAKE
-  if (g_attempts == 5)
+  if (g_Attempts == 5)
   {
-	  g_h5 = '0';
+	  R5 = '0';
   }
 
   ////6 MISTAKE
-  if (g_attempts == 4)
+  if (g_Attempts == 4)
   {
-	  g_h6 = '|';
+	  R6 = '|';
   }
 
   ////7 MISTAKE
-  if (g_attempts == 3)
+  if (g_Attempts == 3)
   {
 	  g_leftleg = 47;
   }
 
   ////8 MISTAKE
-  if (g_attempts == 2)
+  if (g_Attempts == 2)
   {
 	  g_rightleg = 92;
   }
 
   ////9 MISTAKE
-  if (g_attempts == 1)
+  if (g_Attempts == 1)
   {
 	  g_leftarm = 47;
   }
 
    ////10 MISTAKE
-  if (g_attempts == 0)
+  if (g_Attempts == 0)
   {
 	  g_rightarm = 92;
   }
 
 }
-void GuessedLetters(char _input)
+void GuessedLetters(char input)
 {
 	for (int i = 0; i < 20; i++)
 	{
-		if (_input == Incorrect[i])//IF WRONG LETTER REPEATED
+		if (input == Incorrect[i])//IF WRONG LETTER REPEATED
 		{
 			break;
 		}
@@ -455,8 +464,8 @@ void GuessedLetters(char _input)
 		}
 		else//WRONG LETTER WILL BE IN FREE SLOT
 		{
-			Incorrect[i] = _input;
-			g_attempts--;
+			Incorrect[i] = input;
+			g_Attempts--;
 			break;
 		}
 	}
